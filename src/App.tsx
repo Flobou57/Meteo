@@ -19,6 +19,7 @@ import CityCompare from "./components/CityCompare";
 import PrecipChart from "./components/PrecipChart";
 import RainRadar from "./components/RainRadar";
 import Skeleton from "./components/Skeleton";
+import WeatherBackground from "./components/WeatherBackground";
 import { CloudRain, Globe, Thermometer, Bell, BellOff } from "lucide-react";
 
 function App() {
@@ -40,7 +41,17 @@ function App() {
   }, [weather, checkAlerts]);
 
   return (
-    <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 24px" }}>
+    <>
+      {/* Fond immersif */}
+      {weather && (
+        <WeatherBackground
+          weathercode={weather.current.weathercode}
+          sunrise={weather.daily[0]?.sunrise ?? ""}
+          sunset={weather.daily[0]?.sunset ?? ""}
+          temperature={weather.current.temperature}
+        />
+      )}
+    <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 24px", position: "relative", zIndex: 1 }}>
       {/* Header */}
       <div style={{
         display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px",
@@ -208,6 +219,7 @@ function App() {
         </div>
       )}
     </div>
+    </>
   );
 }
 

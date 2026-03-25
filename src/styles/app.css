@@ -1,9 +1,9 @@
 :root,
 [data-theme="dark"] {
-  --bg: #0f1923;
-  --bg-card: #1a2634;
-  --bg-card-hover: #1f2e3f;
-  --bg-input: #1a2634;
+  --bg: transparent;
+  --bg-card: rgba(15, 25, 35, 0.75);
+  --bg-card-hover: rgba(25, 38, 52, 0.8);
+  --bg-input: rgba(15, 25, 35, 0.7);
   --text: #e4e8ec;
   --text-secondary: #8899a6;
   --text-muted: #5b6b7a;
@@ -22,10 +22,10 @@
 }
 
 [data-theme="light"] {
-  --bg: #f0f4f8;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f5f8fb;
-  --bg-input: #f0f4f8;
+  --bg: transparent;
+  --bg-card: rgba(255, 255, 255, 0.75);
+  --bg-card-hover: rgba(245, 248, 251, 0.85);
+  --bg-input: rgba(240, 244, 248, 0.8);
   --text: #1a2634;
   --text-secondary: #4a5e6f;
   --text-muted: #8899a6;
@@ -49,7 +49,12 @@ html, body {
   color: var(--text);
   font-family: var(--font);
   -webkit-font-smoothing: antialiased;
-  transition: background 0.3s, color 0.3s;
+  transition: color 0.3s;
+}
+
+/* Cartes avec glass effect */
+[style*="var(--bg-card)"] {
+  backdrop-filter: blur(12px);
 }
 
 #root { min-height: 100vh; }
