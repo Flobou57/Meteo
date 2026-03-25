@@ -1,30 +1,57 @@
 import { useWeather } from "./hooks/useWeather";
+import { useTheme } from "./hooks/useTheme";
 import SearchBar from "./components/SearchBar";
 import CurrentCard from "./components/CurrentCard";
 import HourlyChart from "./components/HourlyChart";
 import DailyForecast from "./components/DailyForecast";
+import WeatherAlerts from "./components/WeatherAlerts";
+import WeatherMap from "./components/WeatherMap";
+import HistoryCompare from "./components/HistoryCompare";
 import { CloudRain, Loader } from "lucide-react";
 
 function App() {
-  const { weather, loading, error, search } = useWeather("Metz");
+  const {
+    weather,
+    history,
+    loading,
+    error,
+    search,
+    geolocate,
+    favorites,
+    addFavorite,
+    removeFavorite,
+  } = useWeather("Metz");
+
+  const { theme, toggle: toggleTheme } = useTheme();
 
   return (
     <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 24px" }}>
       {/* Header */}
       <div style={{
         display: "flex",
-        justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: "32px",
-        flexWrap: "wrap",
-        gap: "16px",
+        gap: "10px",
+        marginBottom: "24px",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <CloudRain size={28} color="var(--accent)" />
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 700 }}>Météo Dashboard</h1>
-        </div>
-        {weather && <SearchBar onSearch={search} currentCity={weather.city} />}
+        <CloudRain size={28} color="var(--accent)" />
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 700 }}>Météo Dashboard</h1>
       </div>
+
+      {/* Barre de recherche + favoris + thème */}
+      {weather && (
+        <div style={{ marginBottom: "24px" }}>
+          <SearchBar
+            onSearch={search}
+            onGeolocate={geolocate}
+            currentCity={weather.city}
+            favorites={favorites}
+            onAddFavorite={addFavorite}
+            onRemoveFavorite={removeFavorite}
+            theme={theme}
+            onToggleTheme={toggleTheme}
+          />
+        </div>
+      )}
 
       {/* Loading */}
       {loading && (
@@ -49,8 +76,9 @@ function App() {
           border: "1px solid rgba(239, 68, 68, 0.3)",
           borderRadius: "var(--radius-sm)",
           padding: "16px 20px",
-          color: "#ef4444",
+          color: "var(--danger)",
           fontSize: "0.9rem",
+          marginBottom: "20px",
         }}>
           {error}
         </div>
@@ -59,8 +87,14 @@ function App() {
       {/* Contenu */}
       {weather && !loading && (
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          {/* Alertes */}
+          <WeatherAlerts
+            daily={weather.daily}
+            currentTemp={weather.current.temperature}
+          />
+
           {/* Ligne 1 : Météo actuelle + Prévisions 7j */}
-          <div style={{
+          <div className="grid-2col" style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "20px",
@@ -69,8 +103,27 @@ function App() {
             <DailyForecast data={weather.daily} />
           </div>
 
-          {/* Ligne 2 : Graphique horaire */}
-          <HourlyChart data={weather.hourly} />
+          {/* Historique comparatif */}
+          <HistoryCompare
+            currentTemp={weather.current.temperature}
+            currentPrecip={weather.daily[0]?.precipitation ?? 0}
+            history={history}
+          />
+
+          {/* Ligne 2 : Graphique + Carte */}
+          <div className="grid-2col" style={{
+            display: "grid",
+            gridTemplateColumns: "1.5fr 1fr",
+            gap: "20px",
+          }}>
+            <HourlyChart data={weather.hourly} />
+            <WeatherMap
+              latitude={weather.latitude}
+              longitude={weather.longitude}
+              city={weather.city}
+              temperature={weather.current.temperature}
+            />
+          </div>
 
           {/* Footer */}
           <div style={{
@@ -79,7 +132,8 @@ function App() {
             color: "var(--text-muted)",
             fontSize: "0.75rem",
           }}>
-            Données fournies par Open-Meteo · Dernière mise à jour : {new Date(weather.current.time).toLocaleString("fr-FR")}
+            Données fournies par Open-Meteo · Dernière mise à jour :{" "}
+            {new Date(weather.current.time).toLocaleString("fr-FR")}
           </div>
         </div>
       )}

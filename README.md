@@ -1,73 +1,102 @@
-# React + TypeScript + Vite
+<div align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# ☁️ Météo Dashboard
 
-Currently, two official plugins are available:
+**Dashboard météo moderne et interactif**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite)
+![Recharts](https://img.shields.io/badge/Recharts-Charts-22b5bf?style=flat-square)
+![Leaflet](https://img.shields.io/badge/Leaflet-Map-199900?style=flat-square&logo=leaflet)
 
-## React Compiler
+</div>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## ✨ Fonctionnalités
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- 🌡️ **Météo en temps réel** — Température, ressenti, humidité, vent, pression, UV, visibilité
+- 📊 **Graphiques interactifs** — Courbes horaires (température + précipitations) sur 24h
+- 📅 **Prévisions 7 jours** — Avec barres de température min/max colorées
+- 🗺️ **Carte interactive** — Localisation de la ville sur une carte Leaflet
+- 📍 **Géolocalisation auto** — Détecte votre position au lancement
+- ⭐ **Villes favorites** — Sauvegardées en localStorage, switch rapide
+- ⚠️ **Alertes météo** — Bandeau automatique si canicule, gel, orage, neige ou fortes pluies
+- 📈 **Historique** — Comparaison avec la même date l'an dernier
+- 🌗 **Mode sombre / clair** — Toggle avec sauvegarde
+- 📱 **Responsive** — S'adapte à toutes les tailles d'écran
+- 🔑 **Aucune clé API requise** — Utilise Open-Meteo (gratuit et open-source)
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🛠️ Stack technique
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Technologie | Usage |
+|:-----------:|:------|
+| **React 19** | UI composants |
+| **TypeScript** | Typage strict |
+| **Vite** | Build & dev server |
+| **Recharts** | Graphiques interactifs |
+| **Leaflet** | Carte interactive |
+| **Lucide React** | Icônes |
+| **Open-Meteo API** | Données météo (gratuit, sans clé) |
+
+---
+
+## 🚀 Installation
+
+```bash
+# Cloner le projet
+git clone https://github.com/Flobou57/Meteo.git
+cd Meteo
+
+# Installer les dépendances
+npm install
+
+# Lancer en développement
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📁 Structure du projet
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+src/
+├── components/
+│   ├── CurrentCard.tsx      # Carte météo actuelle
+│   ├── DailyForecast.tsx    # Prévisions 7 jours
+│   ├── HistoryCompare.tsx   # Comparaison historique
+│   ├── HourlyChart.tsx      # Graphique horaire
+│   ├── SearchBar.tsx        # Recherche + favoris + thème
+│   ├── WeatherAlerts.tsx    # Alertes météo automatiques
+│   └── WeatherMap.tsx       # Carte Leaflet
+├── hooks/
+│   ├── useWeather.ts        # Logique métier (API, géoloc, favoris)
+│   └── useTheme.ts          # Gestion dark/light mode
+├── types/
+│   └── weather.ts           # Types TypeScript + codes météo
+├── styles/
+│   └── app.css              # Variables CSS + thèmes
+├── App.tsx                  # Assemblage principal
+└── main.tsx                 # Point d'entrée
+```
+
+---
+
+## 📡 API utilisée
+
+**[Open-Meteo](https://open-meteo.com/)** — API météo gratuite et open-source, sans inscription ni clé API.
+
+- Données actuelles, horaires et journalières
+- Géocodage intégré
+- Archives historiques
+
+---
+
+<div align="center">
+
+Fait avec ❤️ par [Flobou57](https://github.com/Flobou57)
+
+</div>

@@ -34,6 +34,8 @@ export interface WeatherData {
   hourly: HourlyForecast[];
   daily: DailyForecast[];
   city: string;
+  latitude: number;
+  longitude: number;
 }
 
 // Codes météo Open-Meteo → description + icône
