@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useWeather } from "./hooks/useWeather";
 import { useTheme } from "./hooks/useTheme";
 import { useUnits } from "./hooks/useUnits";
 import { useI18n } from "./hooks/useI18n";
+import { useNotifications } from "./hooks/useNotifications";
 import SearchBar from "./components/SearchBar";
 import CurrentCard from "./components/CurrentCard";
 import HourlyChart from "./components/HourlyChart";
@@ -10,12 +12,14 @@ import WeatherAlerts from "./components/WeatherAlerts";
 import WeatherMap from "./components/WeatherMap";
 import HistoryCompare from "./components/HistoryCompare";
 import WindRose from "./components/WindRose";
+import WindChart from "./components/WindChart";
 import SunWidget from "./components/SunWidget";
 import AirQuality from "./components/AirQuality";
 import CityCompare from "./components/CityCompare";
 import PrecipChart from "./components/PrecipChart";
+import RainRadar from "./components/RainRadar";
 import Skeleton from "./components/Skeleton";
-import { CloudRain, Globe, Thermometer } from "lucide-react";
+import { CloudRain, Globe, Thermometer, Bell, BellOff } from "lucide-react";
 
 function App() {
   const {
@@ -26,6 +30,14 @@ function App() {
   const { theme, toggle: toggleTheme } = useTheme();
   const { convertTemp, convertSpeed, tempLabel, speedLabel, toggleTemp, toggleSpeed, tempUnit, speedUnit } = useUnits();
   const { lang, toggle: toggleLang, t } = useI18n();
+  const { permission, requestPermission, checkAlerts } = useNotifications();
+
+  // Vérifier les alertes quand les données changent
+  useEffect(() => {
+    if (weather) {
+      checkAlerts(weather.daily, weather.city);
+    }
+  }, [weather, checkAlerts]);
 
   return (
     <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 24px" }}>
@@ -38,18 +50,27 @@ function App() {
           <CloudRain size={28} color="var(--accent)" />
           <h1 style={{ fontSize: "1.5rem", fontWeight: 700 }}>{t("app.title")}</h1>
         </div>
-        <div style={{ display: "flex", gap: "6px" }}>
-          {/* Toggle unités */}
-          <button onClick={toggleTemp} style={pillBtn} title="Changer unité température">
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+          <button onClick={toggleTemp} style={pillBtn} title="Unité température">
             <Thermometer size={13} />
             <span>{tempUnit === "C" ? "°C" : "°F"}</span>
           </button>
-          <button onClick={toggleSpeed} style={pillBtn} title="Changer unité vitesse">
+          <button onClick={toggleSpeed} style={pillBtn} title="Unité vitesse">
             {speedUnit === "kmh" ? "km/h" : "mph"}
           </button>
           <button onClick={toggleLang} style={pillBtn} title="Langue">
             <Globe size={13} />
             <span>{lang.toUpperCase()}</span>
+          </button>
+          <button
+            onClick={requestPermission}
+            style={{
+              ...pillBtn,
+              color: permission === "granted" ? "var(--success)" : "var(--text-muted)",
+            }}
+            title={permission === "granted" ? "Notifications activées" : "Activer les notifications"}
+          >
+            {permission === "granted" ? <Bell size={13} /> : <BellOff size={13} />}
           </button>
         </div>
       </div>
@@ -91,10 +112,9 @@ function App() {
       {/* Contenu */}
       {weather && !loading && (
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          {/* Alertes */}
           <WeatherAlerts daily={weather.daily} currentTemp={weather.current.temperature} />
 
-          {/* Ligne 1 : Météo actuelle + Prévisions 7j */}
+          {/* Météo actuelle + Prévisions 7j */}
           <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
             <CurrentCard
               data={weather.current}
@@ -127,7 +147,7 @@ function App() {
             history={history}
           />
 
-          {/* Ligne 2 : Widgets (soleil, vent, qualité air) */}
+          {/* Widgets (soleil, vent, qualité air) */}
           <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px" }}>
             <SunWidget
               sunrise={weather.daily[0]?.sunrise ?? ""}
@@ -135,26 +155,34 @@ function App() {
               labels={{ title: t("sun.title"), rise: t("sun.rise"), set: t("sun.set"), duration: t("sun.duration") }}
             />
             <WindRose speed={convertSpeed(weather.current.windspeed)} speedLabel={speedLabel} title={t("wind.title")} />
-            <AirQuality latitude={weather.latitude} longitude={weather.longitude} labels={{ ...Object.fromEntries(Object.keys({
-              "aqi.title": 1, "aqi.good": 1, "aqi.moderate": 1, "aqi.unhealthy.sensitive": 1,
-              "aqi.unhealthy": 1, "aqi.very.unhealthy": 1, "aqi.hazardous": 1,
-            }).map(k => [k, t(k)])) }} />
+            <AirQuality
+              latitude={weather.latitude}
+              longitude={weather.longitude}
+              labels={Object.fromEntries(
+                ["aqi.title", "aqi.good", "aqi.moderate", "aqi.unhealthy.sensitive",
+                 "aqi.unhealthy", "aqi.very.unhealthy", "aqi.hazardous"].map(k => [k, t(k)])
+              )}
+            />
           </div>
 
-          {/* Ligne 3 : Graphique temp + précip en barres */}
+          {/* Graphique temp + précipitations */}
           <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "20px" }}>
             <HourlyChart data={weather.hourly} />
             <PrecipChart data={weather.hourly} title={t("hourly.precip")} />
           </div>
 
-          {/* Ligne 4 : Carte + Comparaison villes */}
-          <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+          {/* Vent 24h */}
+          <WindChart data={weather.hourly} convertSpeed={convertSpeed} speedLabel={speedLabel} />
+
+          {/* Carte + Radar + Comparaison */}
+          <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px" }}>
             <WeatherMap
               latitude={weather.latitude}
               longitude={weather.longitude}
               city={weather.city}
               temperature={weather.current.temperature}
             />
+            <RainRadar latitude={weather.latitude} longitude={weather.longitude} />
             <CityCompare
               mainCity={{
                 city: weather.city,

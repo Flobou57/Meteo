@@ -1,6 +1,7 @@
 import { Thermometer, Wind, Droplets, Eye, Gauge, Sun } from "lucide-react";
 import type { CurrentWeather } from "../types/weather";
 import { getWeatherInfo } from "../types/weather";
+import AnimatedValue from "./AnimatedValue";
 
 interface CurrentCardProps {
   data: CurrentWeather;
@@ -34,15 +35,17 @@ export default function CurrentCard({ data, convertTemp, convertSpeed, tempLabel
       background: "var(--bg-card)", borderRadius: "var(--radius)",
       padding: "28px", border: "1px solid var(--border)",
       display: "flex", gap: "28px", flexWrap: "wrap",
+      animation: "fadeIn 0.4s ease-out",
     }}>
+      <style>{`@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`}</style>
       <div style={{ flex: "1 1 180px", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-        <div style={{ fontSize: "3.5rem", lineHeight: 1 }}>{info.icon}</div>
+        <div style={{ fontSize: "3.5rem", lineHeight: 1, transition: "all 0.3s" }}>{info.icon}</div>
         <div style={{ fontSize: "3.5rem", fontWeight: 800, lineHeight: 1, marginTop: "8px" }}>
-          {Math.round(convertTemp(data.temperature))}{tempLabel}
+          <AnimatedValue value={convertTemp(data.temperature)} suffix={tempLabel} />
         </div>
         <div style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginTop: "6px" }}>{info.label}</div>
         <div style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "4px" }}>
-          {labels.feelsLike} {Math.round(convertTemp(data.feelsLike))}{tempLabel}
+          {labels.feelsLike} <AnimatedValue value={convertTemp(data.feelsLike)} suffix={tempLabel} />
         </div>
       </div>
       <div style={{ flex: "1 1 220px" }}>
