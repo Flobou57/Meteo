@@ -35,7 +35,7 @@ export default function DailyForecast({ data, convertTemp, tempLabel, title, tod
           const widthPct = ((maxTemp - minTemp) / range) * 100;
 
           return (
-            <div key={day.date} style={{
+            <div key={day.date} className="daily-row" style={{
               display: "grid", gridTemplateColumns: "80px 28px 40px 1fr 40px",
               alignItems: "center", gap: "10px", padding: "8px 6px",
               borderRadius: "var(--radius-sm)",

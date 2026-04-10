@@ -119,7 +119,7 @@ export default function CityCompare({
       </div>
 
       {/* Tableau comparatif */}
-      <div style={{ overflowX: "auto" }}>
+      <div className="overflow-x-auto" style={{ overflowX: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.85rem" }}>
           <thead>
             <tr style={{ borderBottom: "1px solid var(--border)" }}>

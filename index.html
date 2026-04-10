@@ -1,10 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+
+    <!-- PWA Meta -->
+    <meta name="theme-color" content="#0f1923" />
+    <meta name="background-color" content="#0f1923" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="Météo" />
+    <meta name="description" content="Dashboard météo moderne et interactif" />
+
+    <!-- iOS (Apple) Meta -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Météo" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
+    <!-- Icônes -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>meteo-dashboard</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192x192.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-96x96.png" />
+
+    <!-- Splash screen iOS (empêche l'écran blanc au lancement) -->
+    <meta name="apple-touch-startup-image" content="/icons/icon-512x512.png" />
+
+    <title>Météo Dashboard</title>
   </head>
   <body>
     <div id="root"></div>

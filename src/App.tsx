@@ -51,29 +51,27 @@ function App() {
           temperature={weather.current.temperature}
         />
       )}
-    <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "32px 24px", position: "relative", zIndex: 1 }}>
-      {/* Header */}
-      <div style={{
-        display: "flex", alignItems: "center", gap: "10px", marginBottom: "24px",
-        justifyContent: "space-between", flexWrap: "wrap",
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <CloudRain size={28} color="var(--accent)" />
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 700 }}>{t("app.title")}</h1>
+    <div className="app-container page-inner">
+      {/* Header compact : titre + pills sur une ligne */}
+      <div className="app-header">
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <CloudRain size={22} color="var(--accent)" />
+          <h1 className="app-title">{t("app.title")}</h1>
         </div>
-        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-          <button onClick={toggleTemp} style={pillBtn} title="Unité température">
-            <Thermometer size={13} />
+        <div className="header-actions">
+          <button className="pill-btn" onClick={toggleTemp} style={pillBtn} title="Unité température">
+            <Thermometer size={12} />
             <span>{tempUnit === "C" ? "°C" : "°F"}</span>
           </button>
-          <button onClick={toggleSpeed} style={pillBtn} title="Unité vitesse">
+          <button className="pill-btn" onClick={toggleSpeed} style={pillBtn} title="Unité vitesse">
             {speedUnit === "kmh" ? "km/h" : "mph"}
           </button>
-          <button onClick={toggleLang} style={pillBtn} title="Langue">
-            <Globe size={13} />
+          <button className="pill-btn" onClick={toggleLang} style={pillBtn} title="Langue">
+            <Globe size={12} />
             <span>{lang.toUpperCase()}</span>
           </button>
           <button
+            className="pill-btn"
             onClick={requestPermission}
             style={{
               ...pillBtn,
@@ -81,14 +79,14 @@ function App() {
             }}
             title={permission === "granted" ? "Notifications activées" : "Activer les notifications"}
           >
-            {permission === "granted" ? <Bell size={13} /> : <BellOff size={13} />}
+            {permission === "granted" ? <Bell size={12} /> : <BellOff size={12} />}
           </button>
         </div>
       </div>
 
       {/* Recherche */}
       {weather && (
-        <div style={{ marginBottom: "24px" }}>
+        <div className="search-section">
           <SearchBar
             onSearch={search}
             onGeolocate={geolocate}
@@ -122,11 +120,11 @@ function App() {
 
       {/* Contenu */}
       {weather && !loading && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           <WeatherAlerts daily={weather.daily} currentTemp={weather.current.temperature} />
 
-          {/* Météo actuelle + Prévisions 7j */}
-          <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+          {/* Hero mobile : température grande + icône, visible immédiatement */}
+          <div className="mobile-hero">
             <CurrentCard
               data={weather.current}
               convertTemp={convertTemp}
@@ -142,14 +140,16 @@ function App() {
                 visibility: t("current.visibility"),
               }}
             />
-            <DailyForecast
-              data={weather.daily}
-              convertTemp={convertTemp}
-              tempLabel={tempLabel}
-              title={t("daily.title")}
-              todayLabel={t("daily.today")}
-            />
           </div>
+
+          {/* Prévisions 7j */}
+          <DailyForecast
+            data={weather.daily}
+            convertTemp={convertTemp}
+            tempLabel={tempLabel}
+            title={t("daily.title")}
+            todayLabel={t("daily.today")}
+          />
 
           {/* Historique */}
           <HistoryCompare
@@ -159,7 +159,7 @@ function App() {
           />
 
           {/* Widgets (soleil, vent, qualité air) */}
-          <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px" }}>
+          <div className="grid-3col" style={{ display: "grid", gap: "16px" }}>
             <SunWidget
               sunrise={weather.daily[0]?.sunrise ?? ""}
               sunset={weather.daily[0]?.sunset ?? ""}
@@ -177,7 +177,7 @@ function App() {
           </div>
 
           {/* Graphique temp + précipitations */}
-          <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: "20px" }}>
+          <div className="grid-2col-wide" style={{ display: "grid", gap: "16px" }}>
             <HourlyChart data={weather.hourly} />
             <PrecipChart data={weather.hourly} title={t("hourly.precip")} />
           </div>
@@ -186,7 +186,7 @@ function App() {
           <WindChart data={weather.hourly} convertSpeed={convertSpeed} speedLabel={speedLabel} />
 
           {/* Carte + Radar + Comparaison */}
-          <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px" }}>
+          <div className="grid-3col" style={{ display: "grid", gap: "16px" }}>
             <WeatherMap
               latitude={weather.latitude}
               longitude={weather.longitude}
@@ -212,7 +212,7 @@ function App() {
 
           {/* Footer */}
           <div style={{
-            textAlign: "center", padding: "16px", color: "var(--text-muted)", fontSize: "0.75rem",
+            textAlign: "center", padding: "16px 8px", color: "var(--text-muted)", fontSize: "0.75rem",
           }}>
             {t("footer.powered")} · {t("footer.updated")} : {new Date(weather.current.time).toLocaleString(lang === "fr" ? "fr-FR" : "en-US")}
           </div>

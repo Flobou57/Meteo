@@ -36,7 +36,7 @@ function getSkyGradient(code: number, day: boolean): string {
   return "linear-gradient(180deg, #2a7ae0 0%, #5a9ae8 50%, #87c5ff 100%)";
 }
 
-export default function WeatherBackground({ weathercode, sunrise, sunset, temperature }: WeatherBackgroundProps) {
+export default function WeatherBackground({ weathercode, sunrise, sunset, temperature: _temperature }: WeatherBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const day = isDay(sunrise, sunset);
   const skyGradient = getSkyGradient(weathercode, day);

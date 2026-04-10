@@ -47,12 +47,12 @@ export default function SearchBar({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "12px", width: "100%" }}>
-      <div className="header-row" style={{ display: "flex", alignItems: "center", gap: "12px", justifyContent: "space-between", flexWrap: "wrap" }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
+      <div className="header-row" style={{ display: "flex", alignItems: "center", gap: "10px", justifyContent: "space-between", flexWrap: "wrap" }}>
         {/* Ville + favori */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <MapPin size={20} color="var(--accent)" />
-          <span style={{ fontSize: "1.3rem", fontWeight: 700 }}>{currentCity}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <MapPin size={18} color="var(--accent)" />
+          <span className="city-name" style={{ fontSize: "1.15rem", fontWeight: 700 }}>{currentCity}</span>
           <button
             onClick={() => isFav ? onRemoveFavorite(currentCity) : onAddFavorite(currentCity)}
             style={{ ...btnStyle, padding: "4px", background: "transparent", border: "none" }}
@@ -66,22 +66,24 @@ export default function SearchBar({
         </div>
 
         {/* Recherche + boutons */}
-        <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
-          <form onSubmit={handleSubmit} style={{ display: "flex", gap: "8px" }}>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap", flex: "1 1 280px", minWidth: 0 }}>
+          <form className="search-form" onSubmit={handleSubmit} style={{ display: "flex", gap: "8px", flex: "1 1 200px", minWidth: 0 }}>
             <div style={{
-              display: "flex", alignItems: "center", gap: "8px",
+              display: "flex", alignItems: "center", gap: "8px", flex: 1, minWidth: 0,
               background: "var(--bg-input)", border: "1px solid var(--border)",
               borderRadius: "var(--radius-sm)", padding: "8px 14px",
             }}>
-              <Search size={16} color="var(--text-muted)" />
+              <Search size={16} color="var(--text-muted)" style={{ flexShrink: 0 }} />
               <input
+                className="search-input"
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Rechercher une ville..."
                 style={{
                   background: "transparent", border: "none", outline: "none",
-                  color: "var(--text)", fontSize: "0.9rem", fontFamily: "var(--font)", width: "180px",
+                  color: "var(--text)", fontSize: "16px", fontFamily: "var(--font)",
+                  width: "100%", minWidth: 0,
                 }}
               />
             </div>
@@ -89,6 +91,7 @@ export default function SearchBar({
               background: "var(--accent)", color: "#fff", border: "none",
               borderRadius: "var(--radius-sm)", padding: "8px 16px",
               fontSize: "0.85rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font)",
+              flexShrink: 0,
             }}>
               OK
             </button>
